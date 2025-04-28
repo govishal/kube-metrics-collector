@@ -7,6 +7,7 @@ import (
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/client-go/kubernetes"
+	"k8s.io/client-go/rest"
 	"k8s.io/client-go/tools/clientcmd"
 )
 
@@ -15,17 +16,20 @@ type RealKubeClient struct {
 }
 
 func NewRealKubeClient() (KubernetesClient, error) {
-	// Try to get KUBECONFIG env variable
-	kubeConfigPath := os.Getenv("KUBECONFIG")
-	if kubeConfigPath == "" {
-		// If not set, fallback to project relative path
-		kubeConfigPath = "./.kube/config"
-	}
-
-	// Build the Kubernetes config from the kubeconfig path
-	config, err := clientcmd.BuildConfigFromFlags("", kubeConfigPath)
+	// First, try in-cluster config
+	config, err := rest.InClusterConfig()
 	if err != nil {
-		return nil, err
+		// If failed (probably running locally), try kubeconfig
+		kubeConfigPath := os.Getenv("KUBECONFIG")
+		if kubeConfigPath == "" {
+			// If not set, fallback to project relative path
+			kubeConfigPath = "./.kube/config"
+		}
+
+		config, err = clientcmd.BuildConfigFromFlags("", kubeConfigPath)
+		if err != nil {
+			return nil, err
+		}
 	}
 
 	// Create the Kubernetes client using the config

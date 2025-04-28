@@ -17,7 +17,7 @@ var kubeClient kubernetes.KubernetesClient
 func main() {
 
 	cfg := config.Config{}
-	cfg.UseFake = false
+	cfg.UseFake = true
 
 	// Initialize Kubernetes client based on the config
 	var err error

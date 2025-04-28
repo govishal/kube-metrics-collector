@@ -1,0 +1,18 @@
+version: "3.8"
+
+services:
+  my-kube-client:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: my-kube-client
+    ports:
+      - "8080:8080"
+    environment:
+      - KUBECONFIG=/root/.kube/config  # Use Minikube's kubeconfig
+    volumes:
+      - ~/.kube:/root/.kube  # Mount local kube config directory to container
+    restart: unless-stopped
+
+# Remove the k3s service since you're only using Minikube now.
+# No need for a separate k3s cluster in the container.

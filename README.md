@@ -90,3 +90,7 @@ Environment variables can be used to configure the application:
 * `CLUSTER_URL`: (Currently not actively used in the code).
 * `PORT`: Sets the HTTP server listening port. Defaults to `8080`.
 * `KUBECONFIG`: Specifies the path to the `kubeconfig` file inside the container (e.g., `/root/.kube/config`).
+
+## Added docker compose yml
+* docker-compose build
+* docker-compose up -d
